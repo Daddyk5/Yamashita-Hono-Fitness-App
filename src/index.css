@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Barlow:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --color-arena: #070708;
+  --color-card: #111113;
+  --color-card2: #1A1A1D;
+  --color-steel: #1E1E22;
+  --color-steel2: #2A2A2F;
+  --color-steel3: #3A3A42;
+  --color-muted: #5A5A65;
+  --color-blood: #C41E3A;
+  --color-blood2: #8B1229;
+  --color-blood3: #FF2D55;
+  --color-gold: #D4A017;
+  --color-gold2: #F0C040;
+  --color-amber: #E8820C;
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body: 'Barlow', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #070708;
+  color: #ffffff;
+  font-family: 'Barlow', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar { width: 0; height: 0; }
+* { scrollbar-width: none; }
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #1A1A1D inset;
+  -webkit-text-fill-color: #ffffff;
+}
+
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(196, 30, 58, 0.5); }
+  50% { box-shadow: 0 0 0 12px rgba(196, 30, 58, 0); }
+}
+
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.4; }
+  94% { opacity: 1; }
+  96% { opacity: 0.6; }
+  97% { opacity: 1; }
+}
+
+@keyframes count-up {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.font-display { font-family: 'Barlow Condensed', sans-serif; }
+.font-body { font-family: 'Barlow', sans-serif; }
+
+.animate-pulse-red { animation: pulse-red 2s infinite; }
+.animate-flicker { animation: flicker 5s infinite; }
+.animate-slide-up { animation: slide-up 0.4s ease-out forwards; }
+.animate-spin-slow { animation: spin-slow 8s linear infinite; }
