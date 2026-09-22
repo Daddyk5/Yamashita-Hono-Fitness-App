@@ -19,6 +19,7 @@ export type Screen =
   | 'builder'
   | 'library'
   | 'victory'
+  | 'chat'
   // Progression & Social
   | 'profile'
   | 'power-stats'

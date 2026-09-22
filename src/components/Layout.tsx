@@ -1,7 +1,19 @@
 import React, { ReactNode } from 'react'
+import { Capacitor } from '@capacitor/core'
 import { Screen, Nav } from '../types'
 
+// The decorative phone-frame (rounded corners, border, fixed 390×844 box) is
+// a desktop-preview affordance — it shows the app "as a phone" inside a
+// browser tab. Wrapped as a real native app (Capacitor), the WebView *is*
+// the phone, so that frame would render as a smaller phone shape floating
+// inside the real screen. Render edge-to-edge there instead.
+const isNative = Capacitor.isNativePlatform()
+
 export function AppShell({ children }: { children: ReactNode }) {
+  if (isNative) {
+    return <div className="h-screen w-screen bg-[#070708] relative overflow-hidden">{children}</div>
+  }
+
   return (
     <div className="min-h-screen bg-[#070708] flex items-center justify-center py-4">
       <div

@@ -112,6 +112,26 @@ export function HomeScreen({ nav }: { nav: Nav }) {
           </div>
         </div>
 
+        {/* Quick actions */}
+        <div className="px-5 grid grid-cols-2 gap-3 mb-5">
+          <button
+            onClick={() => nav('chat')}
+            className="text-left p-4 rounded-sm border active:scale-95 transition-all"
+            style={{ background: 'linear-gradient(135deg, #111113, #1A1A1D)', borderColor: '#2A2A2F' }}
+          >
+            <div className="font-display font-black text-sm text-white uppercase">🤖 AI COACH</div>
+            <div className="font-display text-[10px] text-[#5A5A65] uppercase tracking-wide mt-1">Ask for a workout</div>
+          </button>
+          <button
+            onClick={() => nav('library')}
+            className="text-left p-4 rounded-sm border active:scale-95 transition-all"
+            style={{ background: 'linear-gradient(135deg, #111113, #1A1A1D)', borderColor: '#2A2A2F' }}
+          >
+            <div className="font-display font-black text-sm text-white uppercase">📖 LIBRARY</div>
+            <div className="font-display text-[10px] text-[#5A5A65] uppercase tracking-wide mt-1">876 techniques</div>
+          </button>
+        </div>
+
         {/* CTA */}
         <div className="px-5">
           <Btn onClick={() => nav('programs')}>ENTER THE TRAINING GROUNDS</Btn>
