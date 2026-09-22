@@ -31,7 +31,7 @@ export function HomeScreen({ nav }: { nav: Nav }) {
             <div>
               <div className="font-display text-xs tracking-[0.3em] text-[#5A5A65] uppercase mb-1">{today}</div>
               <h1 className="font-display font-black text-3xl text-white uppercase leading-tight">
-                WELCOME BACK,<br /><span className="text-[#C41E3A]">TOKITA ŌHMA</span>
+                WELCOME BACK,<br /><span className="text-[#C41E3A]">REN KUROGANE</span>
               </h1>
             </div>
             <button onClick={() => nav('profile')} className="w-12 h-12 rounded-full bg-[#C41E3A]/20 border border-[#C41E3A]/40 flex items-center justify-center">
@@ -186,8 +186,8 @@ const PROGRAMS = [
     icon: '💀',
   },
   {
-    name: 'ŌMA TOKITA PROTOCOL',
-    sub: 'The Ashura method — body and mind',
+    name: 'KUROGANE PROTOCOL',
+    sub: 'The Oni method — body and mind',
     weeks: 10,
     sessions: 5,
     level: 'CHAMPION',

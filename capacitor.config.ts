@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.kenganashura.fitness',
-  appName: 'Kengan Ashura Fitness',
+  appId: 'com.ironveinarena.fitness',
+  appName: 'Ironvein Arena Fitness',
   webDir: 'dist',
   server: {
     // Allows the WebView to load/fetch plain-HTTP content -- needed while

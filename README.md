@@ -1,4 +1,4 @@
-# Kengan Ashura Fitness
+# Ironvein Arena Fitness
 
 A fitness-tracking app for anime fans — gym sessions framed as fight-arc
 progression, with an AI workout coach grounded against a real 876-exercise
@@ -23,11 +23,19 @@ Capacitor — see [MOBILE.md](MOBILE.md).*
 - **AI Coach chat** (`src/screens/ChatScreen.tsx`) — ask for a workout and
   get real exercise recommendations, streamed token-by-token, grounded
   against the actual exercise database so the model can't invent exercises
-  that don't exist.
+  that don't exist. Includes a mic button for speech-to-text input (browser
+  Web Speech API).
 - **Exercise Library** with live form-demo images for 876 real exercises.
 - **Dual AI provider**: Claude (cloud, needs an API key) or Ollama
   (`llama3.2:3b`, fully local, no key or cost) — auto-selects based on
   whether a key is configured.
+- **Accounts + a purchase gate**: real email/password auth (JWT). AI chat
+  is gated behind "paid or admin" — a seeded admin account always has
+  access; everyone else registers unpaid and unlocks it through a mock
+  purchase flow (no real payment processor wired up yet). See
+  [backend/README.md](backend/README.md#auth-apiauth).
+- Small synthesized UI sound effects (Web Audio API, no audio files) on
+  navigation and chat actions.
 - **Native Android app** via Capacitor — same React code, no rewrite.
 - Code-split screens with a themed loading transition for faster first load.
 
@@ -51,8 +59,12 @@ docker compose exec backend npm run seed   # loads exercises.json into Postgres
 pnpm dev                          # starts the Vite dev server
 ```
 
-Then open the printed local URL. Full backend details (API routes, schema,
-running outside Docker) are in [backend/README.md](backend/README.md).
+Then open the printed local URL. Log in with the default admin account
+(`admin@ironvein.io` / `changeme`, from `.env` — change both before
+deploying anywhere real) to skip the purchase gate, or register a normal
+account and hit "Purchase Access" on the AI Coach screen (mock purchase,
+no real payment). Full backend details (API routes, schema, running
+outside Docker) are in [backend/README.md](backend/README.md).
 
 To run it as an installed Android app instead of in a browser, see
 [MOBILE.md](MOBILE.md).

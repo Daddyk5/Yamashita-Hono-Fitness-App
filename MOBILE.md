@@ -24,7 +24,7 @@ cd android
 # APK: android/app/build/outputs/apk/debug/app-debug.apk
 
 adb install -r app/build/outputs/apk/debug/app-debug.apk
-adb shell am start -n com.kenganashura.fitness/.MainActivity
+adb shell am start -n com.ironveinarena.fitness/.MainActivity
 ```
 
 Or in one step: `pnpm android:build` (runs `android:sync` + `assembleDebug`).

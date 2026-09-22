@@ -83,7 +83,7 @@ export const SIGNATURE_MOVES: SignatureMove[] = [
 
 const ALIAS_BY_ID = new Map(SIGNATURE_MOVES.map(m => [m.dbId, m.alias]))
 
-/** The Kengan ring name for a move, when it has one. */
+/** The Ironvein ring name for a move, when it has one. */
 export function aliasFor(dbId: string): string | undefined {
   return ALIAS_BY_ID.get(dbId)
 }

@@ -4,7 +4,10 @@ import { BloodStrip, Btn, ScreenLabel } from '../components/Layout'
 import { FormDemo } from '../components/FormDemo'
 import { FormSheet } from '../components/ExerciseDetail'
 import { EXERCISE_IMG_BASE } from '../data/exerciseDb'
-import { ChatExercise, ChatMessage, streamChat } from '../data/chatApi'
+import { ChatExercise, ChatMessage, PurchaseRequiredError, streamChat } from '../data/chatApi'
+import { purchase } from '../data/authApi'
+import { playError, playSuccess, playTap } from '../utils/sfx'
+import { useSpeechToText } from '../utils/useSpeechToText'
 
 // ─── AI COACH CHAT ─────────────────────────────────────────────────────────
 // Talks to POST /api/chat/stream. Every exercise recommendation is grounded
@@ -62,8 +65,11 @@ export function ChatScreen({ nav }: { nav: Nav }) {
   const [streaming, setStreaming] = useState(false)
   const [provider, setProvider] = useState<'claude' | 'ollama' | null>(null)
   const [openExercise, setOpenExercise] = useState<string | null>(null)
+  const [purchaseRequired, setPurchaseRequired] = useState(false)
+  const [purchasing, setPurchasing] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const abortRef = useRef<AbortController | null>(null)
+  const speech = useSpeechToText(text => setInput(prev => (prev ? `${prev} ${text}` : text)))
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
@@ -75,6 +81,7 @@ export function ChatScreen({ nav }: { nav: Nav }) {
   const send = async (text: string) => {
     const question = text.trim()
     if (!question || streaming) return
+    playTap()
 
     const history: ChatMessage[] = turns.map(t => ({ role: t.role, content: t.content }))
     setTurns(t => [...t, { role: 'user', content: question }, { role: 'assistant', content: '' }])
@@ -107,19 +114,42 @@ export function ChatScreen({ nav }: { nav: Nav }) {
               break
             case 'error':
               updateLast(t => ({ ...t, content: t.content || event.message, error: true }))
+              playError()
+              break
+            case 'done':
+              playSuccess()
               break
           }
         },
         controller.signal
       )
     } catch (err) {
-      updateLast(t => ({
-        ...t,
-        content: t.content || (err instanceof Error ? err.message : 'Connection lost.'),
-        error: true,
-      }))
+      if (err instanceof PurchaseRequiredError) {
+        setTurns(prev => prev.slice(0, -2))
+        setPurchaseRequired(true)
+      } else {
+        updateLast(t => ({
+          ...t,
+          content: t.content || (err instanceof Error ? err.message : 'Connection lost.'),
+          error: true,
+        }))
+        playError()
+      }
     } finally {
       setStreaming(false)
+    }
+  }
+
+  const handlePurchase = async () => {
+    setPurchasing(true)
+    try {
+      await purchase()
+      playSuccess()
+      setPurchaseRequired(false)
+    } catch {
+      playError()
+    } finally {
+      setPurchasing(false)
     }
   }
 
@@ -198,14 +228,48 @@ export function ChatScreen({ nav }: { nav: Nav }) {
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && send(input)}
-          placeholder="ASK ABOUT A WORKOUT..."
+          placeholder={speech.listening ? 'LISTENING...' : 'ASK ABOUT A WORKOUT...'}
           disabled={streaming}
           className="flex-1 bg-[#111113] border border-[#2A2A2F] text-white placeholder-[#3A3A42] px-4 py-3 font-body text-sm outline-none focus:border-[#C41E3A] transition-colors rounded-sm disabled:opacity-50"
         />
+        {speech.supported && (
+          <button
+            onClick={() => (speech.listening ? speech.stop() : speech.start())}
+            disabled={streaming}
+            className="flex-shrink-0 w-11 h-11 rounded-sm border flex items-center justify-center text-lg transition-colors disabled:opacity-50"
+            style={
+              speech.listening
+                ? { background: '#C41E3A', borderColor: '#C41E3A' }
+                : { background: '#111113', borderColor: '#2A2A2F' }
+            }
+          >
+            🎤
+          </button>
+        )}
         <Btn onClick={() => send(input)} fullWidth={false} size="md" className="px-5">
           {streaming ? '···' : 'SEND'}
         </Btn>
       </div>
+
+      {purchaseRequired && (
+        <div className="absolute inset-0 bg-black/80 flex items-end z-10">
+          <div className="w-full bg-[#111113] border-t border-[#2A2A2F] rounded-t-lg p-6 space-y-4">
+            <div className="font-display font-black text-2xl text-white uppercase leading-tight">
+              UNLOCK THE <span className="text-[#C41E3A]">AI COACH</span>
+            </div>
+            <p className="font-body text-sm text-[#8A8A8A]">
+              The AI training coach is a premium feature. Purchase access to get personalized,
+              database-grounded workout recommendations.
+            </p>
+            <Btn onClick={handlePurchase} disabled={purchasing}>
+              {purchasing ? 'PROCESSING...' : 'PURCHASE ACCESS'}
+            </Btn>
+            <Btn variant="ghost" onClick={() => { setPurchaseRequired(false); nav('home') }}>
+              MAYBE LATER
+            </Btn>
+          </div>
+        </div>
+      )}
 
       {openExercise && <FormSheet dbId={openExercise} onClose={() => setOpenExercise(null)} />}
     </div>

@@ -1,4 +1,4 @@
-package com.kenganashura.fitness;
+package com.ironveinarena.fitness;
 
 import com.getcapacitor.BridgeActivity;
 

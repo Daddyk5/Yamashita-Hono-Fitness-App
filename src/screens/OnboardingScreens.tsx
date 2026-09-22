@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Nav } from '../types'
 import { Btn, TextInput, Divider, BloodStrip, ScreenLabel } from '../components/Layout'
+import { login as apiLogin, register as apiRegister } from '../data/authApi'
 
 // ─── 1. SPLASH ───────────────────────────────────────────────────────────────
 export function SplashScreen({ nav }: { nav: Nav }) {
@@ -46,10 +47,10 @@ export function SplashScreen({ nav }: { nav: Nav }) {
 
       <div className="text-center animate-flicker">
         <div className="font-display font-black text-[52px] leading-none tracking-[0.1em] text-white uppercase">
-          KENGAN
+          IRONVEIN
         </div>
         <div className="font-display font-black text-[52px] leading-none tracking-[0.1em] text-[#C41E3A] uppercase">
-          ASHURA
+          ARENA
         </div>
         <div className="font-display font-bold text-[18px] tracking-[0.4em] text-[#5A5A65] uppercase mt-1">
           FITNESS
@@ -75,7 +76,7 @@ export function WelcomeScreen({ nav }: { nav: Nav }) {
   const slides = [
     {
       headline: 'THE ARENA AWAITS',
-      body: 'In the underground fighting world of Kengan, only the strongest survive. Every workout is a battle. Every rep, a war cry.',
+      body: 'In the underground fighting world of Ironvein, only the strongest survive. Every workout is a battle. Every rep, a war cry.',
     },
     {
       headline: 'FORGE YOUR LEGEND',
@@ -160,7 +161,7 @@ export function FighterNameScreen({ nav }: { nav: Nav }) {
           <div>
             <TextInput
               label="Fighter Name"
-              placeholder="e.g. TOKITA ŌHMA"
+              placeholder="e.g. REN KUROGANE"
               value={name}
               onChange={setName}
             />
@@ -270,6 +271,21 @@ export function LoginScreen({ nav }: { nav: Nav }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPw, setShowPw] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  async function handleLogin() {
+    setError(null)
+    setLoading(true)
+    try {
+      await apiLogin(email, password)
+      nav('home')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="h-full flex flex-col bg-[#070708]">
@@ -283,7 +299,7 @@ export function LoginScreen({ nav }: { nav: Nav }) {
       </div>
 
       <div className="flex-1 px-6 space-y-4">
-        <TextInput label="Email" placeholder="fighter@kengan.io" type="email" value={email} onChange={setEmail} />
+        <TextInput label="Email" placeholder="fighter@ironvein.io" type="email" value={email} onChange={setEmail} />
         <TextInput
           label="Password"
           placeholder="••••••••"
@@ -301,10 +317,11 @@ export function LoginScreen({ nav }: { nav: Nav }) {
             FORGOT PASSWORD?
           </button>
         </div>
+        {error && <div className="font-body text-sm text-[#FF2D55]">{error}</div>}
       </div>
 
       <div className="px-6 pb-8 space-y-3">
-        <Btn onClick={() => nav('home')}>ENTER THE ARENA</Btn>
+        <Btn onClick={handleLogin} disabled={loading}>{loading ? 'ENTERING...' : 'ENTER THE ARENA'}</Btn>
         <Divider label="new fighter?" />
         <Btn variant="ghost" onClick={() => nav('signup')}>CREATE FIGHTER ACCOUNT</Btn>
       </div>
@@ -319,6 +336,25 @@ export function SignupScreen({ nav }: { nav: Nav }) {
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [showPw, setShowPw] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  async function handleRegister() {
+    setError(null)
+    if (password !== confirm) {
+      setError('Passwords do not match')
+      return
+    }
+    setLoading(true)
+    try {
+      await apiRegister(email, password, name || undefined)
+      nav('avatar')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Registration failed')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="h-full overflow-y-auto bg-[#070708]">
@@ -333,7 +369,7 @@ export function SignupScreen({ nav }: { nav: Nav }) {
 
       <div className="px-6 space-y-4 pb-6">
         <TextInput label="Full Name" placeholder="Your real name" value={name} onChange={setName} />
-        <TextInput label="Email" placeholder="fighter@kengan.io" type="email" value={email} onChange={setEmail} />
+        <TextInput label="Email" placeholder="fighter@ironvein.io" type="email" value={email} onChange={setEmail} />
         <TextInput
           label="Password"
           placeholder="Min. 8 characters"
@@ -359,14 +395,15 @@ export function SignupScreen({ nav }: { nav: Nav }) {
             ⚠ PASSWORDS DO NOT MATCH
           </div>
         )}
+        {error && <div className="font-body text-sm text-[#FF2D55]">{error}</div>}
 
         <div className="text-[#5A5A65] font-body text-xs leading-relaxed pt-2">
-          By registering, you agree to our Terms of Combat and Privacy Policy. Your data is as secure as a Kengan fighter's grip.
+          By registering, you agree to our Terms of Combat and Privacy Policy. Your data is as secure as an Ironvein fighter's grip.
         </div>
       </div>
 
       <div className="px-6 pb-8">
-        <Btn onClick={() => nav('avatar')}>REGISTER FIGHTER</Btn>
+        <Btn onClick={handleRegister} disabled={loading}>{loading ? 'REGISTERING...' : 'REGISTER FIGHTER'}</Btn>
       </div>
     </div>
   )
@@ -374,7 +411,7 @@ export function SignupScreen({ nav }: { nav: Nav }) {
 
 // ─── 7. FIGHTER AVATAR SELECTION ─────────────────────────────────────────────
 const AVATARS = [
-  { id: 'a1', name: 'THE ASHURA', color: '#C41E3A', symbol: '龍' },
+  { id: 'a1', name: 'THE ONI', color: '#C41E3A', symbol: '鬼' },
   { id: 'a2', name: 'IRON HAMMER', color: '#3A6B8A', symbol: '鉄' },
   { id: 'a3', name: 'SHADOW WOLF', color: '#2A5C3A', symbol: '狼' },
   { id: 'a4', name: 'GOLD FANG', color: '#D4A017', symbol: '牙' },
@@ -465,7 +502,7 @@ export function ForgotPasswordScreen({ nav }: { nav: Nav }) {
       </div>
 
       <div className="flex-1 px-6">
-        <TextInput label="Registered Email" placeholder="fighter@kengan.io" type="email" value={email} onChange={setEmail} />
+        <TextInput label="Registered Email" placeholder="fighter@ironvein.io" type="email" value={email} onChange={setEmail} />
 
         {/* Visual decoration */}
         <div className="mt-10 flex items-center gap-4">
@@ -520,7 +557,7 @@ export function VerifyingScreen({ nav }: { nav: Nav }) {
   const steps = [
     'ANALYZING FIGHTER DATA...',
     'CALIBRATING POWER LEVELS...',
-    'ENTERING THE KENGAN ARENA...',
+    'ENTERING THE IRONVEIN ARENA...',
     'FIGHTER REGISTERED.',
   ]
 
@@ -565,7 +602,7 @@ export function VerifyingScreen({ nav }: { nav: Nav }) {
       </div>
 
       <div className="absolute bottom-16">
-        <div className="font-display text-[10px] tracking-[0.3em] text-[#1A1A1D] uppercase">KENGAN ASHURA FITNESS</div>
+        <div className="font-display text-[10px] tracking-[0.3em] text-[#1A1A1D] uppercase">IRONVEIN ARENA FITNESS</div>
       </div>
     </div>
   )

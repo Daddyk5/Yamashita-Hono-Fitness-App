@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 import { Capacitor } from '@capacitor/core'
 import { Screen, Nav } from '../types'
+import { playTap } from '../utils/sfx'
 
 // The decorative phone-frame (rounded corners, border, fixed 390×844 box) is
 // a desktop-preview affordance — it shows the app "as a phone" inside a
@@ -87,7 +88,7 @@ export function BottomNav({ active, nav }: { active: Screen; nav: Nav }) {
         return (
           <button
             key={id}
-            onClick={() => nav(id)}
+            onClick={() => { playTap(); nav(id) }}
             className="flex-1 py-3 flex flex-col items-center gap-1 transition-all active:scale-90"
           >
             <span style={{ color: isActive ? '#C41E3A' : '#5A5A65' }}>
@@ -116,6 +117,7 @@ export function Btn({
   fullWidth = true,
   size = 'lg',
   className = '',
+  disabled = false,
 }: {
   children: ReactNode
   onClick?: () => void
@@ -123,6 +125,7 @@ export function Btn({
   fullWidth?: boolean
   size?: 'sm' | 'md' | 'lg'
   className?: string
+  disabled?: boolean
 }) {
   const variants = {
     primary: 'bg-[#C41E3A] text-white hover:bg-[#A01830] active:bg-[#8B1229]',
@@ -139,7 +142,8 @@ export function Btn({
   return (
     <button
       onClick={onClick}
-      className={`font-display font-bold tracking-widest uppercase transition-all active:scale-95 rounded-sm ${variants[variant]} ${sizes[size]} ${fullWidth ? 'w-full' : ''} ${className}`}
+      disabled={disabled}
+      className={`font-display font-bold tracking-widest uppercase transition-all active:scale-95 rounded-sm ${variants[variant]} ${sizes[size]} ${fullWidth ? 'w-full' : ''} ${disabled ? 'opacity-50 pointer-events-none' : ''} ${className}`}
     >
       {children}
     </button>

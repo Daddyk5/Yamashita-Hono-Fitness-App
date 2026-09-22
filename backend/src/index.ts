@@ -4,7 +4,10 @@ import { env } from "./env.js";
 import { checkDatabaseConnection } from "./db.js";
 import { exercisesRouter } from "./routes/exercises.routes.js";
 import { chatRouter } from "./routes/chat.routes.js";
+import { authRouter } from "./routes/auth.routes.js";
 import { isOllamaAvailable } from "./services/ollama.service.js";
+import { ensureAdminUser } from "./services/auth.service.js";
+import { requireAuth, requirePaidOrAdmin } from "./middleware/auth.middleware.js";
 
 const app = express();
 
@@ -36,12 +39,19 @@ app.get("/api/health", async (_req, res) => {
   });
 });
 
+app.use("/api/auth", authRouter);
 app.use("/api/exercises", exercisesRouter);
-app.use("/api/chat", chatRouter);
+// AI chat costs real tokens/compute, so it's gated behind "paid or admin" --
+// see backend/src/middleware/auth.middleware.ts.
+app.use("/api/chat", requireAuth, requirePaidOrAdmin, chatRouter);
 
 app.use((_req, res) => {
   res.status(404).json({ error: "Not found" });
 });
+
+ensureAdminUser()
+  .then(() => console.log(`Admin account ready: ${env.adminEmail}`))
+  .catch((err) => console.error("Failed to bootstrap admin account", err));
 
 app.listen(env.port, () => {
   console.log(`Backend listening on http://localhost:${env.port} (${env.nodeEnv})`);

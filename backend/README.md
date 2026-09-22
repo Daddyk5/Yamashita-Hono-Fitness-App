@@ -56,11 +56,38 @@ pnpm dev
 - `GET /api/exercises` — list exercises. Query params: `muscle`,
   `level`, `category`, `equipment`, `search` (matched against name).
 - `GET /api/exercises/:id` — single exercise by numeric id.
-- `POST /api/chat/stream` — AI workout chat, Server-Sent Events. See below.
+- `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me`,
+  `POST /api/auth/purchase` — see below.
+- `POST /api/chat/stream` — AI workout chat, Server-Sent Events, **requires
+  a bearer token from a paid or admin account**. See below.
+
+### Auth (`/api/auth/*`)
+
+| Route | Body | Notes |
+| --- | --- | --- |
+| `POST /register` | `{ email, password, displayName? }` | Creates an account. Starts `is_paid: false`. Returns `{ token, user }`. |
+| `POST /login` | `{ email, password }` | Returns `{ token, user }`. |
+| `GET /me` | — (bearer token) | Returns the current user. |
+| `POST /purchase` | — (bearer token) | **Mock purchase** — flips `is_paid` to `true`. No real payment processor is wired up; swap this for a Stripe webhook (or similar) before going live. |
+
+Tokens are JWTs (`JWT_SECRET`, 7-day expiry) sent as `Authorization: Bearer <token>`.
+
+**Admin account**: on every backend startup, `ensureAdminUser()`
+(`src/services/auth.service.ts`) upserts a single admin account from
+`ADMIN_EMAIL`/`ADMIN_PASSWORD` (defaults: `admin@ironvein.io` / `changeme`
+— change both before deploying anywhere real). Admins have `is_admin: true`
+and always bypass the purchase gate.
+
+**Purchase gate**: `POST /api/chat/stream` is wrapped with
+`requireAuth` + `requirePaidOrAdmin` (`src/middleware/auth.middleware.ts`).
+An unpaid, non-admin user gets `402 Purchase required`; the frontend's
+`ChatScreen` catches that and shows a purchase prompt that calls
+`POST /api/auth/purchase`.
 
 ### AI chat (`POST /api/chat/stream`)
 
-Body: `{ "messages": [{ "role": "user", "content": "..." }], "provider"?: "claude" | "ollama" }`
+Body: `{ "messages": [{ "role": "user", "content": "..." }], "provider"?: "claude" | "ollama" }`.
+Requires `Authorization: Bearer <token>` from a paid or admin account.
 
 Every recommendation is grounded by a `search_exercises` tool call against
 the `exercises` table (876 rows seeded from `exercises.json`) — the model
@@ -88,19 +115,41 @@ SSE event types: `provider` (which one is answering), `text` (token
 deltas), `tool_use` (Claude only — visibility into tool calls), `done`,
 `error`.
 
-Example:
+Example (log in first to get a token — the admin account bypasses the
+purchase gate):
 
 ```bash
+TOKEN=$(curl -s -X POST http://localhost:4000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@ironvein.io","password":"changeme"}' | jq -r .token)
+
 curl -N -X POST http://localhost:4000/api/chat/stream \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
   -d '{"messages":[{"role":"user","content":"Give me one beginner bodyweight chest exercise."}]}'
 ```
 
 ## Schema
 
-See `migrations/001_init.sql`, auto-applied the first time the
-`postgres` container initializes its data volume:
+See `migrations/001_init.sql`, `002_add_external_id.sql`, and
+`003_add_auth.sql` — all auto-applied the first time the `postgres`
+container initializes an **empty** data volume.
+
+If you already had the stack running before `003_add_auth.sql` was added,
+Postgres won't re-run it automatically (init scripts only run once, on a
+fresh volume). Apply it by hand:
+
+```bash
+docker compose exec -T postgres psql -U fitness_app -d fitness_app < backend/migrations/003_add_auth.sql
+docker compose up -d --build backend   # picks up the new auth code + deps
+```
 
 - `exercises` — seeded from the repo's `exercises.json`.
-- `users`, `workout_logs` — scaffolded for future workout-tracking
-  features; not yet wired to any route.
+- `users` — email/password auth, `is_admin`, `is_paid`, `total_workouts`,
+  `xp`. A `trg_users_updated_at` trigger keeps `updated_at` current; a
+  `trg_workout_logs_xp` trigger on `workout_logs` awards xp and bumps
+  `total_workouts` on the owning user whenever a session is logged
+  (`apply_workout_xp()` in `003_add_auth.sql`).
+- `workout_logs` — scaffolded; not yet wired to a route (nothing writes to
+  it yet, so the xp trigger has no live caller — it's ready for whenever
+  workout logging ships).

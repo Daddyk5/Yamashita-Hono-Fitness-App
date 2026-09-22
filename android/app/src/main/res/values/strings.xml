@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Kengan Ashura Fitness</string>
-    <string name="title_activity_main">Kengan Ashura Fitness</string>
-    <string name="package_name">com.kenganashura.fitness</string>
-    <string name="custom_url_scheme">com.kenganashura.fitness</string>
+    <string name="app_name">Ironvein Arena Fitness</string>
+    <string name="title_activity_main">Ironvein Arena Fitness</string>
+    <string name="package_name">com.ironveinarena.fitness</string>
+    <string name="custom_url_scheme">com.ironveinarena.fitness</string>
 </resources>

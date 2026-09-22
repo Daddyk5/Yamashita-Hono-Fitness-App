@@ -93,7 +93,7 @@ export function ErrorStateScreen({ nav }: { nav: Nav }) {
       </div>
 
       <div className="mt-6 font-display text-[10px] tracking-[0.25em] text-[#2A2A2F] uppercase">
-        KENGAN ASHURA FITNESS · STATUS: INTERRUPTED
+        IRONVEIN ARENA FITNESS · STATUS: INTERRUPTED
       </div>
     </div>
   )
@@ -126,7 +126,7 @@ export function OfflineModeScreen({ nav }: { nav: Nav }) {
       </h1>
 
       <p className="font-body text-[#5A5A65] text-sm leading-relaxed mb-6 max-w-xs">
-        You've been cut off from the Kengan network. But a true fighter trains with or without connection.
+        You've been cut off from the Ironvein network. But a true fighter trains with or without connection.
       </p>
 
       {/* Offline available features */}

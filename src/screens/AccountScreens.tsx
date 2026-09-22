@@ -7,7 +7,7 @@ const SETTING_GROUPS = [
   {
     title: 'FIGHTER ACCOUNT',
     items: [
-      { label: 'Fighter Profile', sub: 'Tokita Ōhma · WARRIOR', action: 'profile' as const, icon: '👤' },
+      { label: 'Fighter Profile', sub: 'Ren Kurogane · WARRIOR', action: 'profile' as const, icon: '👤' },
       { label: 'Body Stats Tracker', sub: 'Weight, measurements & more', action: 'body-stats' as const, icon: '📏' },
       { label: 'Fighter Pass', sub: 'Free tier · Upgrade available', action: 'fighter-pass' as const, icon: '⚡' },
     ],

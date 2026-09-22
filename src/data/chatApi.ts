@@ -2,7 +2,17 @@
 // Uses fetch + a manually parsed Server-Sent Events body rather than
 // EventSource, since EventSource cannot send a POST body.
 
+import { getToken } from './authApi'
+
 export const API_BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? 'http://localhost:4000'
+
+/** Thrown when the backend returns 402 -- the signed-in user hasn't purchased access. */
+export class PurchaseRequiredError extends Error {
+  constructor() {
+    super('Purchase required to use the AI coach')
+    this.name = 'PurchaseRequiredError'
+  }
+}
 
 export type ChatRole = 'user' | 'assistant'
 
@@ -43,12 +53,20 @@ export async function streamChat(
   onEvent: (event: ChatStreamEvent) => void,
   signal?: AbortSignal
 ): Promise<void> {
+  const token = getToken()
   const res = await fetch(`${API_BASE_URL}/api/chat/stream`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     body: JSON.stringify({ messages }),
     signal,
   })
+
+  if (res.status === 402) {
+    throw new PurchaseRequiredError()
+  }
 
   if (!res.ok || !res.body) {
     let message = `Chat request failed (${res.status})`

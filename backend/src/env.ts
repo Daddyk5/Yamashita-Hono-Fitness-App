@@ -38,4 +38,9 @@ export const env = {
   // Ollama server.
   ollamaHost: process.env.OLLAMA_HOST ?? "http://localhost:11434",
   ollamaModel: process.env.OLLAMA_MODEL ?? "llama3.2:3b",
+  // Dev-only defaults. Override both in production -- the fallback secret
+  // must never be relied on outside local development.
+  jwtSecret: process.env.JWT_SECRET ?? "dev-only-secret-change-me",
+  adminEmail: process.env.ADMIN_EMAIL ?? "admin@ironvein.io",
+  adminPassword: process.env.ADMIN_PASSWORD ?? "changeme",
 };

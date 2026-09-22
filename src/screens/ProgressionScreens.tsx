@@ -17,11 +17,11 @@ export function ProfileScreen({ nav }: { nav: Nav }) {
             {/* Avatar */}
             <div className="w-20 h-20 rounded-full border-2 border-[#C41E3A] flex items-center justify-center flex-shrink-0"
               style={{ background: 'radial-gradient(circle, rgba(196,30,58,0.2), rgba(196,30,58,0.05))' }}>
-              <span className="font-display font-black text-4xl text-[#C41E3A]">龍</span>
+              <span className="font-display font-black text-4xl text-[#C41E3A]">鬼</span>
             </div>
             <div className="flex-1 pt-1">
-              <div className="font-display font-black text-2xl text-white uppercase leading-tight">TOKITA ŌHMA</div>
-              <div className="font-display text-xs text-[#5A5A65] uppercase tracking-wide mt-0.5">THE ASHURA</div>
+              <div className="font-display font-black text-2xl text-white uppercase leading-tight">REN KUROGANE</div>
+              <div className="font-display text-xs text-[#5A5A65] uppercase tracking-wide mt-0.5">THE ONI</div>
               <div className="flex items-center gap-2 mt-2">
                 <RankBadge rank="WARRIOR" size="sm" />
                 <span className="font-display text-xs text-[#5A5A65]">LVL 47</span>
@@ -176,7 +176,7 @@ export function PowerStatsScreen({ nav }: { nav: Nav }) {
       <div className="flex-1 overflow-y-auto pb-4">
         <div className="px-5 pt-2 pb-4">
           <h1 className="font-display font-black text-3xl text-white uppercase">FIGHTER ANALYSIS</h1>
-          <div className="font-display text-xs text-[#5A5A65] tracking-widest">TOKITA ŌHMA · WARRIOR CLASS</div>
+          <div className="font-display text-xs text-[#5A5A65] tracking-widest">REN KUROGANE · WARRIOR CLASS</div>
         </div>
 
         {/* Radar chart */}
@@ -240,7 +240,7 @@ export function RankLadderScreen({ nav }: { nav: Nav }) {
 
       <div className="px-5 pt-3 pb-3">
         <h1 className="font-display font-black text-3xl text-white uppercase leading-tight">
-          THE KENGAN<br /><span className="text-[#C41E3A]">BRACKET</span>
+          THE IRONVEIN<br /><span className="text-[#C41E3A]">BRACKET</span>
         </h1>
         <p className="font-body text-xs text-[#5A5A65] mt-1">Rise through 10 ranks to become Supreme</p>
       </div>
@@ -300,7 +300,7 @@ const ACHIEVEMENTS = [
   { name: 'BEAST MODE', desc: 'Burn 1,000 calories in one session', icon: '🔥', unlocked: false, xp: 1000 },
   { name: 'RIVAL SLAYER', desc: 'Defeat 10 rivals', icon: '💀', unlocked: false, xp: 1200 },
   { name: 'CENTURY WARRIOR', desc: 'Complete 100 workouts', icon: '💯', unlocked: false, xp: 2000 },
-  { name: 'KENGAN ELITE', desc: 'Reach Champion rank', icon: '👑', unlocked: false, xp: 5000 },
+  { name: 'IRONVEIN ELITE', desc: 'Reach Champion rank', icon: '👑', unlocked: false, xp: 5000 },
 ]
 
 export function AchievementsScreen({ nav }: { nav: Nav }) {
@@ -454,7 +454,7 @@ const LEADERS = [
   { pos: 3, name: 'COSMO IMAI', rank: 'BERSERKER', power: 17650, change: -1 },
   { pos: 4, name: 'RYUKI GAOH', rank: 'WARRIOR', power: 14230, change: 2 },
   { pos: 5, name: 'AGITO KANOH', rank: 'WARRIOR', power: 12900, change: 0 },
-  { pos: 6, name: 'TOKITA ŌHMA ← YOU', rank: 'WARRIOR', power: 8420, change: 3, isYou: true },
+  { pos: 6, name: 'REN KUROGANE ← YOU', rank: 'WARRIOR', power: 8420, change: 3, isYou: true },
   { pos: 7, name: 'KIRYU SETSUNA', rank: 'WARRIOR', power: 7840, change: -2 },
   { pos: 8, name: 'OHKUBO NAOYA', rank: 'GLADIATOR', power: 6210, change: 1 },
 ]
@@ -469,7 +469,7 @@ export function LeaderboardScreen({ nav }: { nav: Nav }) {
         <div className="px-5 pt-10 pb-3">
           <ScreenLabel>GLOBAL RANKINGS</ScreenLabel>
           <h1 className="font-display font-black text-4xl text-white uppercase mt-1">
-            THE KENGAN<br /><span className="text-[#C41E3A]">LEADERBOARD</span>
+            THE IRONVEIN<br /><span className="text-[#C41E3A]">LEADERBOARD</span>
           </h1>
         </div>
 
@@ -584,7 +584,7 @@ export function RivalScreen({ nav }: { nav: Nav }) {
               style={{ background: 'rgba(196,30,58,0.15)' }}>
               <span className="font-display font-black text-3xl text-[#C41E3A]">龍</span>
             </div>
-            <div className="font-display font-black text-sm text-white uppercase">TOKITA ŌHMA</div>
+            <div className="font-display font-black text-sm text-white uppercase">REN KUROGANE</div>
             <div className="font-display text-xs text-[#C41E3A] mt-0.5">WARRIOR</div>
             <div className="font-display font-black text-2xl text-white mt-2">8,420</div>
             <div className="font-display text-[10px] text-[#5A5A65]">POWER LVL</div>
