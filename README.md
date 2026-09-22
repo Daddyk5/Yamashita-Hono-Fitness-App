@@ -6,10 +6,11 @@ database. React + Vite web app, Express/PostgreSQL backend, and a native
 Android build via Capacitor.
 
 <p align="center">
-  <img src="docs/screenshots/welcome.png" width="220" alt="Welcome screen" />
-  <img src="docs/screenshots/onboarding.png" width="220" alt="Onboarding" />
-  <img src="docs/screenshots/registration.png" width="220" alt="Fighter registration — weight class and fitness level" />
-  <img src="docs/screenshots/loading.png" width="220" alt="Loading screen" />
+  <img src="docs/screenshots/welcome.png" width="200" alt="Welcome screen with original ring illustration" />
+  <img src="docs/screenshots/onboarding.png" width="200" alt="Onboarding slide with rising power-level illustration" />
+  <img src="docs/screenshots/no-mercy.png" width="200" alt="Onboarding slide with clashing-fists illustration" />
+  <img src="docs/screenshots/registration.png" width="200" alt="Fighter registration — weight class and fitness level" />
+  <img src="docs/screenshots/loading.png" width="200" alt="Loading screen" />
 </p>
 
 *Screenshots captured from a real build running on an Android emulator via

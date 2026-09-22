@@ -70,21 +70,79 @@ export function SplashScreen({ nav }: { nav: Nav }) {
   )
 }
 
+// Original geometric illustrations for the welcome carousel, in the same
+// blocky "stacked rects" style as the splash screen's fist mark — not
+// traced from or referencing any anime artwork.
+function ArenaSlideArt({ variant }: { variant: 0 | 1 | 2 }) {
+  return (
+    <svg width="200" height="140" viewBox="0 0 200 140" fill="none">
+      {variant === 0 && (
+        <>
+          {/* Spotlight cone over an octagon ring, seen from above */}
+          <polygon points="100,4 130,4 150,24 150,54 130,74 70,74 50,54 50,24 70,4"
+            fill="none" stroke="#2A2A2F" strokeWidth="2" transform="translate(0,20)" />
+          <polygon points="100,14 122,14 138,30 138,48 122,64 78,64 62,48 62,30 78,14"
+            fill="#111113" stroke="#C41E3A" strokeWidth="1.5" transform="translate(0,20)" />
+          <path d="M100 0 L60 20 L140 20 Z" fill="#C41E3A" opacity="0.12" />
+          {/* Center fist mark */}
+          <g transform="translate(84,52)">
+            <rect x="0" y="10" width="32" height="24" rx="3" fill="#C41E3A" />
+            <rect x="4" y="0" width="22" height="14" rx="3" fill="#A01830" />
+          </g>
+        </>
+      )}
+      {variant === 1 && (
+        <>
+          {/* Rising power bars behind an ascending fist */}
+          {[0, 1, 2, 3, 4].map(i => (
+            <rect key={i} x={20 + i * 32} y={120 - (i + 1) * 18} width="18" height={(i + 1) * 18}
+              fill={i === 4 ? '#C41E3A' : '#1A1A1D'} stroke={i === 4 ? 'none' : '#2A2A2F'} />
+          ))}
+          <g transform="translate(146,18)">
+            <rect x="0" y="18" width="30" height="24" rx="3" fill="#D4A017" />
+            <rect x="4" y="4" width="22" height="16" rx="3" fill="#F0C040" />
+            <rect x="-6" y="22" width="8" height="14" rx="2" fill="#8B1229" />
+          </g>
+        </>
+      )}
+      {variant === 2 && (
+        <>
+          {/* Two fists clashing with an impact burst between them */}
+          <g transform="translate(20,44)">
+            <rect x="0" y="10" width="30" height="24" rx="3" fill="#C41E3A" />
+            <rect x="4" y="-4" width="22" height="16" rx="3" fill="#A01830" />
+          </g>
+          <g transform="translate(150,44) scale(-1,1)">
+            <rect x="0" y="10" width="30" height="24" rx="3" fill="#5A5A65" />
+            <rect x="4" y="-4" width="22" height="16" rx="3" fill="#3A3A42" />
+          </g>
+          <path d="M100 30 L112 46 L100 52 L112 58 L100 74 L88 58 L100 52 L88 46 Z"
+            fill="#FF2D55" opacity="0.9" />
+          <circle cx="100" cy="52" r="34" fill="none" stroke="#FF2D55" strokeWidth="1" opacity="0.25" />
+        </>
+      )}
+    </svg>
+  )
+}
+
 // ─── 2. WELCOME (ORIGIN STORY) ───────────────────────────────────────────────
 export function WelcomeScreen({ nav }: { nav: Nav }) {
   const [page, setPage] = useState(0)
-  const slides = [
+  const slides: { headline: string; body: string; art: 0 | 1 | 2 }[] = [
     {
       headline: 'THE ARENA AWAITS',
       body: 'In the underground fighting world of Ironvein, only the strongest survive. Every workout is a battle. Every rep, a war cry.',
+      art: 0,
     },
     {
       headline: 'FORGE YOUR LEGEND',
       body: 'Rise through the ranks. Shatter limits. Your power level isn\'t just a number — it\'s your fighting spirit quantified.',
+      art: 1,
     },
     {
       headline: 'NO MERCY. NO WEAKNESS.',
       body: 'Champions are made in the grind. Enter the tournament. Claim your rank. Become unstoppable.',
+      art: 2,
     },
   ]
 
@@ -103,7 +161,10 @@ export function WelcomeScreen({ nav }: { nav: Nav }) {
         <div className="absolute top-0 right-0 w-40 h-1 bg-[#C41E3A]" style={{ transform: 'rotate(45deg) translate(20px, -20px)' }} />
       </div>
 
-      <div className="flex-1 flex flex-col justify-center px-8 pt-20">
+      <div className="flex-1 flex flex-col justify-center px-8 pt-16">
+        <div className="flex justify-center mb-4">
+          <ArenaSlideArt variant={slides[page].art} />
+        </div>
         <ScreenLabel>ORIGIN STORY · {page + 1}/{slides.length}</ScreenLabel>
         <h1 className="font-display font-black text-5xl leading-none tracking-wide text-white uppercase mt-4 mb-6">
           {slides[page].headline}
